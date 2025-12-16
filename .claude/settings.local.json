@@ -24,7 +24,9 @@
       "Bash(az network vnet subnet list:*)",
       "Bash(az network vnet peering list:*)",
       "Bash(az aks show:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: Azure Bicep modules collection\n\nIncludes modules for:\n- Automation (automation account, runbook)\n- Bot services\n- Compute (VMs, disks, AI services)\n- Database (SQL)\n- Managed identity\n- Monitoring (Log Analytics, alerts, Application Insights)\n- Network (VNet, NSG, Firewall, VPN, Load Balancer)\n- Recovery services (backup vault, policies)\n- Security (Key Vault)\n- Storage accounts\n- Usage samples\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git branch:*)"
     ]
   }
 }
