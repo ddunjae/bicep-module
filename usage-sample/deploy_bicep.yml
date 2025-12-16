@@ -1,0 +1,72 @@
+name: deploy-bicep
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RG_COUNT: 2
+  RG_NAME_LIST: ("rg1" "rg2")
+  RG_LOCATION_LIST: ("koreacentral" "eastus")
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: 'true'
+          token: ${{ secrets.GIT_PAT }}
+
+      - name: Set up Git tag version
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        id: previoustag
+        with:
+          fallback: 1.0.0
+
+      - name: Set up Azure auth
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Set up Azure resource group
+        uses: Azure/CLI@v1
+        with:
+          inlineScript: |
+            #!/bin/bash
+            RG_NAME_LIST=${{ env.RG_NAME_LIST }}
+            RG_LOCATION_LIST=${{ env.RG_LOCATION_LIST }}
+            for i in $(seq 1 ${{ env.RG_COUNT }}); do
+              if [ $(az group exists --name ${RG_NAME_LIST[$i-1]}) = false ]; then
+                az group create --name ${RG_NAME_LIST[$i-1]} --location ${RG_LOCATION_LIST[$i-1]}
+                echo "Azure Resource Group (${RG_NAME_LIST[$i-1]}) Created"
+              else
+                echo "Azure Resource Group (${RG_NAME_LIST[$i-1]}) Already Exist, Skip"
+              fi
+            done
+      
+      - name: Template validation
+        uses: azure/arm-deploy@v1
+        continue-on-error: false
+        with: 
+          deploymentName: "${{ steps.previoustag.outputs.tag }}-release"
+          template: ./main.bicep
+          scope: subscription
+          region: 'koreacentral'
+          additionalArguments: "--what-if"
+
+      - name: Template Deploy
+        uses: azure/arm-deploy@v1
+        with: 
+          deploymentName: "${{ steps.previoustag.outputs.tag }}-release"
+          template: ./main.bicep
+          scope: subscription
+          region: 'koreacentral'

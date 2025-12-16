@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(az account set:*)",
+      "Bash(az account show:*)",
+      "Bash(az network vnet show:*)",
+      "Bash(az resource list:*)",
+      "Bash(az network nsg:*)",
+      "Bash(az network route-table:*)",
+      "Bash(az acr show:*)",
+      "Bash(az vm show:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "Bash(git pull:*)",
+      "Bash(az login:*)",
+      "Bash(az monitor account show:*)",
+      "Bash(az rest:*)",
+      "Bash(az grafana show:*)",
+      "Bash(az extension add:*)",
+      "Bash(az network vnet list:*)",
+      "Bash(az network vnet subnet list:*)",
+      "Bash(az network vnet peering list:*)",
+      "Bash(az aks show:*)",
+      "Bash(git remote add:*)"
+    ]
+  }
+}
